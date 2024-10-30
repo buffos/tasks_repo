@@ -1,0 +1,8 @@
+version: "3"
+
+tasks:
+  task_update:
+    desc: Update the task definition. Use -region region_name to specify the region. Default region is eu-central-1.
+    platforms: [windows]
+    cmds:
+      - pwsh.exe -File ./scripts/aws_taskDef_update.ps1

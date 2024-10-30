@@ -1,0 +1,92 @@
+# The target module(s) to launch.
+target: all
+
+# Enables authentication through the X-Scope-OrgID header, which must be present
+# if true. If false, the OrgID will always be set to 'fake'.
+auth_enabled: false
+
+# Configures the server of the launched module(s).
+server:
+  http_listen_address: 0.0.0.0
+  http_listen_port: 3100
+  grpc_listen_port: 9095
+
+ingester:
+  wal:
+    enabled: true
+    dir: /tmp/wal
+  # Configures how the lifecycle of the ingester will operate and where it will register for discovery.
+  lifecycler:
+    ring:
+      kvstore:
+        # Backend storage to use for the ring. Supported values are: consul, etcd, inmemory, memberlist, multi.
+        store: inmemory
+        # The prefix for the keys in the store. Should end with a /.
+        prefix: "collectors/" # default = "collectors/"
+      # The heartbeat timeout after which ingesters are skipped for reads/writes. 0 = never (timeout disabled).
+      heartbeat_timeout: 1m # default = 1m
+      # The number of ingesters to write to and read from.
+      replication_factor: 1 # default = 3
+  # How long chunks should sit in-memory with no updates before being flushed if
+  # they don't hit the max block size. This means that half-empty chunks will
+  # still be flushed after a certain period as long as they receive no further activity.
+  chunk_idle_period: 5m # default = 30m
+  # The targeted _uncompressed_ size in bytes of a chunk block When this threshold is exceeded the head block will be cut and compressed inside the chunk.
+  chunk_block_size: 262144 # default = 262144
+  chunk_target_size: 1572864 # default = 1572864
+  # The maximum amount of time a chunk will be retained in memory after it has been flushed.
+  chunk_retain_period: 30s # default = 0s
+  # The algorithm to use for compressing chunk. (none, gzip, lz4-64k, snappy,lz4-256k, lz4-1M, lz4, flate, zstd)
+  chunk_encoding: gzip # default = gzip
+  # The maximum amount of time a chunk will be retained in memory before being flushed.
+  max_chunk_age: 2h # default = 2h
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb #store and object_store below affect which <storage_config> key is used. Which index to use. Either tsdb or boltdb-shipper.
+      object_store: filesystem #s3, azure, gcs, alibabacloud, bos, cos, swift, filesystem, or a named_store
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  # Configures storing index in an Object Store
+  # (GCS/S3/Azure/Swift/COS/Filesystem) in a prometheus TSDB-like format. Required
+  # fields only required when TSDB is defined in config.
+  tsdb_shipper:
+    active_index_directory: /tmp/loki/index
+    cache_location: /tmp/loki/cache
+    cache_ttl: 24h
+  filesystem:
+    directory: /loki/index
+
+compactor:
+  # Directory where files can be downloaded for compaction.
+  working_directory: /loki/compactor
+  # The interval at which the compactor will run.
+  compaction_interval: 10m # default = 10m
+
+limits_config:
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h # default = 1w
+
+# how chunks will be cached and how long to wait before saving them to the backing store.
+chunk_store_config:
+  # The directory where chunks are stored.
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 168h # Tables older than this retention period are deleted. Must be either 0 (disabled) or a multiple of 24h
+
+ruler:
+  storage:
+    type: local # Method to use for backend rule storage (configdb, azure, gcs, s3, swift, local, bos, cos)
+    local:
+      directory: /loki/rules
+  rule_path: /loki/rules
+  ring:
+    kvstore:
+      store: inmemory # Backend storage to use for the ring. Supported values are: consul, etcd, inmemory, memberlist, multi.
+  enable_api: true # Enable the ruler API.

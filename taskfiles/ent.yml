@@ -1,0 +1,7 @@
+version: "3"
+
+tasks:
+  schema:
+    cmd: go run -mod=mod entgo.io/ent/cmd/ent new {{.CLI_ARGS}}
+  gen:
+    cmd: go generate ./ent

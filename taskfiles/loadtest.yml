@@ -1,0 +1,39 @@
+version: 3
+
+tasks:
+  smoke:
+    description: "runs the load test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/smokeTest.js
+  smoke-p:
+    description: "runs the load test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/smokeTest.js
+  average:
+    description: "runs the average load test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/averageTest.js
+  average-p:
+    description: "runs the average load test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/averageTest.js
+  stress:
+    description: "runs the stress test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/stressTest.js
+  stress-p:
+    description: "runs the stress test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/stressTest.js
+  soak:
+    description: "runs the soak test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/soakTest.js
+  soak-p:
+    description: "runs the soak test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/soakTest.js
+  spike:
+    description: "runs the spike test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/spikeTest.js
+  spike-p:
+    description: "runs the spike test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/spikeTest.js
+  break:
+    description: "runs the break test with web dashboard enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run /scripts/breakTest.js
+  break-p:
+    description: "runs the break test with prometheus remote write enabled"
+    cmd: docker compose -p loadtest -f taskfiles/compose/compose.k6.local.yml run --rm k6 run -o experimental-prometheus-rw /scripts/breakTest.js

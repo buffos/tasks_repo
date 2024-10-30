@@ -1,0 +1,5 @@
+version: "3"
+
+tasks:
+  inspect_db:
+    cmd: docker run --rm -it --net=host arigaio/atlas schema inspect -u {{.DB_URL}} --dev-url "sqlite://file?mode=memory&_fk=1" --web

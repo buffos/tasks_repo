@@ -1,0 +1,16 @@
+services:
+  pg_client:
+    container_name: pg_client
+    image: pg_client
+    build:
+      context: ../dockerfile
+      dockerfile: Dockerfile.pgclient
+    environment:
+      - PGHOST=host.docker.internal
+      - PGPORT=5432
+      - PGUSER=root
+      - PGPASSWORD=secret
+      - PGDATABASE=postgres
+    command: ['tail', '-f', '/dev/null']
+    volumes:
+      - ./:/pg_dump

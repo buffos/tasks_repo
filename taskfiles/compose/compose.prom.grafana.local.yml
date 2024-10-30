@@ -1,0 +1,45 @@
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    volumes:
+      - ../config/loki/data:/loki
+      - ../config/loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+    ports:
+      - '3100:3100'
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ../config/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../config/prometheus/data:/prometheus
+    command:
+      - --web.enable-remote-write-receiver
+      - --enable-feature=native-histograms
+    ports:
+      - '9090:9090'
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - ../config/grafana/data:/var/lib/grafana
+    networks:
+      - monitoring
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring:
+    driver: bridge

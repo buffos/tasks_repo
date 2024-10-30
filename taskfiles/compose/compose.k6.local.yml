@@ -1,0 +1,19 @@
+services:
+  k6:
+    image: grafana/k6:latest
+    container_name: k6
+    volumes:
+      - ../config/k6/scripts:/scripts
+    command: ['tail', '-f', '/dev/null']
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_STATS=p(95),p(99),min,max,avg,sum
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+      - PROMETHEUS_URL=http://prometheus:9090
+      - K6_WEB_DASHBOARD=true
+    networks:
+      - telemetry_monitoring
+
+networks:
+  telemetry_monitoring:
+    external: true # Use the existing external network

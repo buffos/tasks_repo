@@ -1,0 +1,15 @@
+version: "3"
+
+tasks:
+  create_atlas:
+    cmds:
+      - docker pull arigaio/atlas
+      - docker run --rm arigaio/atlas --help
+  create_prometheus:
+    cmds:
+      - docker pull prom/prometheus:latest
+      - docker run --name=prometheus -p 9095:9095 -d prom/prometheus:latest
+  create_grafana:
+    cmds:
+      - docker pull grafana/grafana-enterprise:latest
+      - docker run --name=grafana -p 3001:3001 -d grafana/grafana-enterprise:latest

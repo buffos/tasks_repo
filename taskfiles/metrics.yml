@@ -1,0 +1,9 @@
+version: 3
+
+# since we call the project telemetry, the network that will be created is telemetry_monitoring
+# if we need to access the containers from outside the host, we define the network: telemetry_monitoring: and external: true
+tasks:
+  up:
+    cmd: docker compose -p telemetry -f taskfiles/compose/compose.prom.grafana.local.yml up -d
+  down:
+    cmd: docker compose -p telemetry -f taskfiles/compose/compose.prom.grafana.local.yml down

@@ -1,0 +1,70 @@
+version: 3
+
+# start stop and create a database
+tasks:
+  psql:
+    desc: Create and run postgres container from the latest postgres image.
+    cmds:
+      - docker run --name psql -p 5432:5432 -e POSTGRES_USER={{.DB_USER}} -e POSTGRES_PASSWORD={{.DB_PASSWORD}} -d postgres:latest
+  create:
+    desc: Create a database. Usage create -- database_name
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client createdb --username={{.DB_USER}} --owner={{.DB_USER}} {{.CLI_ARGS}}
+  drop:
+    desc: Drop a database. Usage drop -- database_name
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client dropdb {{.CLI_ARGS}}
+  cli:
+    desc: Run a command in the psql container.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}}
+  list:
+    desc: List all databases.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} -l
+  roles:
+    desc: List all roles.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} -c "\du"
+  tb_info:
+    desc: Show Tablespace Information.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} -c "\db"
+  list_tables:
+    desc: List all tables. Usage list_tables -- database_name
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} --dbname={{.CLI_ARGS}} -c "\dt"
+  users:
+    desc: List all users.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} -c "\du"
+  version:
+    desc: Show the PostgreSQL version.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run  --rm pg_client psql --username={{.DB_USER}} -c "SELECT version();"
+  backup:
+    desc: Backup the database. Usage backup -- database_name
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run --rm pg_client pg_dump --username={{.DB_USER}} --dbname={{.CLI_ARGS}} --clean --create --format=tar -f ./pg_dump/{{.CLI_ARGS}}.tar
+      # - docker compose -p pg-shell -f ./taskfiles/compose/compose.pgclient.local.yml up -d
+      # - docker exec pg_client pg_dump --username={{.DB_USER}} --dbname={{.CLI_ARGS}} --clean --create --format=tar -f {{.CLI_ARGS}}.tar
+      # - docker cp pg_client:/{{.CLI_ARGS}}.tar .
+      # - docker compose -p pg-shell -f ./taskfiles/compose/compose.pgclient.local.yml down
+  backupGlobals:
+    desc: Backup all databases.
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run --rm pg_client  pg_dumpall --host={{.DB_HOST}} --username={{.DB_USER}} --globals-only -f ./pg_dump/all.sql
+  restore:
+    desc: Restore the database. Usage restore -- database_name
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run --rm pg_client pg_restore --username={{.DB_USER}} --verbose --clean --create --format=tar -d postgres ./pg_dump/{{.CLI_ARGS}}.tar
+      # - docker cp {{.CLI_ARGS}}.tar psql:/
+      # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql  pg_restore --host={{.DB_HOST}} --username={{.DB_USER}} --verbose --clean --create --format=tar -d postgres {{.CLI_ARGS}}.tar
+      # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql rm -rf {{.CLI_ARGS}}.tar
+  restoreGlobals:
+    desc: Restore the global objects. Usage restoreGlobals
+    cmds:
+      - docker compose -f ./taskfiles/compose/compose.pgclient.local.yml run --rm pg_client psql  --username={{.DB_USER}} -f ./pg_dump/all.sql postgres
+      # - docker cp all.sql psql:/
+      # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql  psql --host={{.DB_HOST}} --username={{.DB_USER}} -f all.sql postgres
+      # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql rm -rf all.sql

@@ -1,0 +1,28 @@
+version: "3"
+
+env:
+  CURRENT_ENV: testing
+dotenv:
+  ["./secrets/.env", "./secrets/{{.CURRENT_ENV}}.env", "./secrets/secrets.env"]
+
+vars:
+  DB_USER: root
+  DB_PASSWORD: secret
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_NAME: ent_demo
+  DB_URL: postgres://{{.DB_USER}}:{{.DB_PASSWORD}}@{{.DB_HOST}}:{{.DB_PORT}}/{{.DB_NAME}}?sslmode=disable
+
+includes:
+  atlas: taskfiles/atlas.yml
+  aws: taskfiles/aws.yml
+  db: taskfiles/database.yml
+  docker: taskfiles/docker.yml
+  ent: taskfiles/ent.yml
+  go: taskfiles/go.yml
+  loadtest: taskfiles/loadtest.yml
+  metrics: taskfiles/metrics.yml
+  secrets: taskfiles/secrets.yml
+tasks:
+  default:
+    cmd: task --list-all

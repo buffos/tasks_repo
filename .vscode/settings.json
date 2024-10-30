@@ -1,0 +1,32 @@
+{
+    "cSpell.words": [
+        "alibabacloud",
+        "arigaio",
+        "Bilal",
+        "boltdb",
+        "configdb",
+        "createdb",
+        "dbname",
+        "dotenv",
+        "dropdb",
+        "dumpall",
+        "entgo",
+        "EXAMPLEVAR",
+        "flate",
+        "ingester",
+        "ingesters",
+        "inmemory",
+        "kvstore",
+        "lifecycler",
+        "loadtest",
+        "memberlist",
+        "pgclient",
+        "PGPASSWORD",
+        "psql",
+        "sslmode",
+        "Tablespace",
+        "taskfiles",
+        "tsdb",
+        "zstd"
+    ]
+}

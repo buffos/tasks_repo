@@ -1,0 +1,20 @@
+# exclude grafana data, home, logs, plugins, provisioning folder contents
+taskfiles/config/grafana/data/*
+taskfiles/config/loki/data/*
+taskfiles/config/prometheus/data/*
+
+# keep grafana config folders
+!taskfiles/config/grafana/*/.gitkeep
+# keep loki config folders
+!taskfiles/config/loki/*/.gitkeep
+# keep prometheus config folders
+!taskfiles/config/prometheus/*/.gitkeep
+# keep k6 config folders
+!taskfiles/config/k6/*/.gitkeep
+
+# keep secrets folder
+secrets/*
+!secrets/*.gitkeep
+
+# node_modules
+taskfiles/**/node_modules/*
