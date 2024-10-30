@@ -4,7 +4,7 @@ tasks:
   create_atlas:
     cmds:
       - docker pull arigaio/atlas
-      - docker run --rm arigaio/atlas --help
+      - docker run rm arigaio/atlas --help
   create_prometheus:
     cmds:
       - docker pull prom/prometheus:latest
@@ -13,3 +13,8 @@ tasks:
     cmds:
       - docker pull grafana/grafana-enterprise:latest
       - docker run --name=grafana -p 3001:3001 -d grafana/grafana-enterprise:latest
+  build_image:
+    desc: Builds the docker image based on a configuration file
+    platforms: [windows]
+    cmds:
+      - pwsh.exe -File .\\scripts\\docker_build_image.ps1

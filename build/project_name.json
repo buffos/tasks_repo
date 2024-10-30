@@ -1,0 +1,44 @@
+{
+  "beta": {
+    "build": 8,
+    "builder": "mbuilder",
+    "dockerfile": "C:\\path\\to\\Dockerfile",
+    "image": "repo/image",
+    "load": "false",
+    "platform": "linux/arm64",
+    "push": true,
+    "secretString": "id=value,src=path/to/file",
+    "tag": [
+      "beta-latest"
+    ],
+    "version": "1.0"
+  },
+  "local": {
+    "build": 12,
+    "builder": "mbuilder",
+    "dockerfile": "C:\\Users\\buffo\\Code\\promedialab\\promedialab-backend-go\\Dockerfile",
+    "image": "repo/image",
+    "load": true,
+    "platform": "linux/amd64",
+    "push": false,
+    "secretString": "id=gta,src=./secrets/gta",
+    "tag": [
+      "local-latest"
+    ],
+    "version": "1.0"
+  },
+  "production": {
+    "build": 0,
+    "builder": "mbuilder",
+    "dockerfile": "C:\\path\\to\\Dockerfile",
+    "image": "repo/image",
+    "load": false,
+    "platform": "linux/arm64",
+    "push": true,
+    "secretString": "id=value,src=path/to/file",
+    "tag": [
+      "production-latest"
+    ],
+    "version": "1.0"
+  }
+}

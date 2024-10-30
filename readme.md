@@ -53,12 +53,18 @@ Create some containers
 - docker:create_atlas `downloads the image of atlas and runs it once, but removes the container`
 - docker:create_prometheus: `gets the latest image of prometheus and spins a container in the background. no remove. Name = prometheus`
 - docker:create_grafana: `gets the latest image of grafana and spins a container in the background. Name = grafana `
+- docker:build_image `this command builds a docker image based on a configuration file.`
+    >You are asked about the location of the config file, initially opens at the build directory.
+    >The configuration file has all the different types of images you want to create. Local, beta, production, test etc. Just edit the >fields of the template project_name.json file and you are done.
+    >The configuration of each build covers image-name (repo/name), tags that you may want to apply, architecture etc. Of course you can >always edit the script to add more info.
+    >Once the build is done successfully, the build number is increased. The build number is the number of the **next** build.
+
 
 ### 6. Metrics
 
 Create a permanent service for prometheus, grafana, loki etc
 
-All containers listen to +1 of their defaults, in case we need to deploy others in the default port.
+All containers listen to of their defaults, in case we need to deploy others in the default port.
 
 - metrics:up `spins up the metrics service`
 - metrics:down `spins down the metrics service`

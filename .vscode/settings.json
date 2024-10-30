@@ -19,6 +19,7 @@
         "kvstore",
         "lifecycler",
         "loadtest",
+        "mbuilder",
         "memberlist",
         "pgclient",
         "PGPASSWORD",
