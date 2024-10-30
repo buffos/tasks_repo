@@ -62,3 +62,13 @@ All containers listen to +1 of their defaults, in case we need to deploy others 
 
 - metrics:up `spins up the metrics service`
 - metrics:down `spins down the metrics service`
+
+### 7. Secrets
+
+It uses the values found in the /secrets/secrets.env file to get some values
+
+
+- secrets:aws_dev `exports the contents of the file $DEV_SECRETS_FILE to aws secret manager with name $DEV_SECRET_NAME`
+- secrets:aws_prod `same as the dev, but using the $PROD_SECRETS_FILE and $PROD_SECRET_NAME variables`
+- secrets:aws_import `reads the secret with name $DEV_SECRET_NAME and exports it to export.env file in the secrets folder. Change the variable to point to a different secret`
+
