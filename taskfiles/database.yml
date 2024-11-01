@@ -68,3 +68,7 @@ tasks:
       # - docker cp all.sql psql:/
       # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql  psql --host={{.DB_HOST}} --username={{.DB_USER}} -f all.sql postgres
       # - docker exec -it -e PGPASSWORD={{.DB_PASSWORD}} psql rm -rf all.sql
+  redis-cli:
+    desc: Run redis-cli.
+    cmds:
+      - docker exec -it redis-stack redis-cli

@@ -1,0 +1,21 @@
+{
+    "main": {
+        "description": "Main project",
+        "name": "Main",
+        "path": {
+            "load_test": "load_test",
+            "root": "path/to/project",
+            "test": "test"
+        },
+        "secrets": {
+            "aws_dev": {
+                "name": "aws/secret/name/path",
+                "path": "file/path/relative/to/root"
+            },
+            "aws_prod": {
+                "name": "aws/secret/name/path",
+                "path": "file/path/relative/to/root"
+            }
+        }
+    }
+}

@@ -15,6 +15,10 @@ Using [ps-menu](https://github.com/chrisseroka/ps-menu) to create interactive se
 - secrets folders will hold all of our .env files or other files we do not want in the repository.
 - scripts folder in the root, will have all powershell or bash scripts we want to use in our tasks.
 
+### The project.json file
+
+In order to keep this the center of operation of all projects, the project.json will hold all necessary information about the project. We associate the project with a key and this key is passed in the taskfile.yml as the var $PROJECT_KEY. This way, we only have to change that key, and all scripts will take parameters, if needed from there. We did not follow this route in the build section, because a single project can build multiple images, so it it easier to select the json file that contains the configuration for that image, than creating nested objects inside the json file and figure out a way to let the user select the image they want to build.
+
 ## Usage
 
 ### 1. Default
@@ -71,10 +75,41 @@ All containers listen to of their defaults, in case we need to deploy others in 
 
 ### 7. Secrets
 
-It uses the values found in the /secrets/secrets.env file to get some values
+The project.json file has a separate secrets section.
 
+- It is necessary to have defined the path.root key (which is the path to the project we are working)
+- Every entry in the secrets object corresponds to a different secret on the server. It has the name property (which is the name on the server) and the path, which is the path of the .env file stored relative to the root path as noted above.
 
-- secrets:aws_dev `exports the contents of the file $DEV_SECRETS_FILE to aws secret manager with name $DEV_SECRET_NAME`
-- secrets:aws_prod `same as the dev, but using the $PROD_SECRETS_FILE and $PROD_SECRET_NAME variables`
-- secrets:aws_import `reads the secret with name $DEV_SECRET_NAME and exports it to export.env file in the secrets folder. Change the variable to point to a different secret`
+- secrets:to_aws `exports the contents to aws`
+    - Usage: task:to_aws -- <key_secret>
+    - Example: The secrets section of the project.json template file looks like
+    ```json
+            "secrets": {
+                "aws_dev": {
+                    "name": "aws/secret/name/path",
+                    "path": "file/path/relative/to/root"
+                },
+                "aws_prod": {
+                    "name": "aws/secret/name/path",
+                    "path": "file/path/relative/to/root"
+                }
+            }
+    ```
+    This means that task:to_aws -- aws_dev , will export the file that "path" points to, to the secret "name" points to.
+- secrets:from_aws `imports a secret from aws to local drive`
+    - Usage: task:from_aws -- <key_secret>
 
+    It uses the same keys and values as the export script. The exported file is saved in the secrets folder of **this** directory.
+
+### 8. Local project tasks
+
+We obviously need to run the local taskfile commands, which are defined in the project. Build, run, test etc.
+To do that use
+
+- task local -- "command we want to issue"
+
+For example
+
+`task local -- "task --list"` will list all the tasks of the local project
+
+Important: The project we are targeting is the one defined in the $PROJECT_KEY variable in taskfile.yml. Changing the key all you need to target that project in all scripts. Just make sure the root path is configured correctly.

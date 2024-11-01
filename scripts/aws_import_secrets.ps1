@@ -1,9 +1,31 @@
 param (
-    [string]$secretName
+    [string]$key,
+    [string]$project
 )
 
-if ($secretName -eq $null -or $secretName -eq "") {
-    Write-Output "Please provide a secret name."
+if ($null -eq $project -or $project -eq "") {
+    Write-Output "Please provide a project key."
+    exit 1
+}
+
+# Check if the environment file is provided
+if ($null -eq $key -or $key -eq "") {
+    Write-Output "Please provide a secret key."
+    exit 1
+}
+
+# first get the project json file and read the key = $project
+$projectFilePath = "projects.json"
+if (-not (Test-Path $projectFilePath)) {
+    Write-Output "The project file $projectFilePath does not exist"
+    exit 1
+}
+
+$projectJson = Get-Content $projectFilePath -Raw | ConvertFrom-Json
+$secretName = $projectJson."$project".secrets."$key".name
+
+if ( $null-eq $secretName -or $secretName -eq "") {
+    Write-Output "Please provide a secret key."
     exit 1
 }
 

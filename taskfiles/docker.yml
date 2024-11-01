@@ -13,6 +13,14 @@ tasks:
     cmds:
       - docker pull grafana/grafana-enterprise:latest
       - docker run --name=grafana -p 3001:3001 -d grafana/grafana-enterprise:latest
+  create_localstack:
+    desc: Run aws services locally for development purposes.
+    cmds:
+      - docker run --name localstack -p 4566:4566 -p 4510-4559:4510-4559 -d localstack/localstack
+  create_redis:
+    desc: Run redis container from the latest redis image.
+    cmds:
+      - docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
   build_image:
     desc: Builds the docker image based on a configuration file
     platforms: [windows]

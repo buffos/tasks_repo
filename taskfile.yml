@@ -12,6 +12,7 @@ vars:
   DB_PORT: 5432
   DB_NAME: ent_demo
   DB_URL: postgres://{{.DB_USER}}:{{.DB_PASSWORD}}@{{.DB_HOST}}:{{.DB_PORT}}/{{.DB_NAME}}?sslmode=disable
+  PROJECT_KEY: main
 
 includes:
   atlas: taskfiles/atlas.yml
@@ -26,3 +27,5 @@ includes:
 tasks:
   default:
     cmd: task --list-all
+  local:
+    cmd: pwsh.exe -File ./scripts/exec_local_taskfile.ps1 -project {{.PROJECT_KEY}} -command {{.CLI_ARGS}}

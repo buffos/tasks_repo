@@ -19,6 +19,7 @@
         "kvstore",
         "lifecycler",
         "loadtest",
+        "localstack",
         "mbuilder",
         "memberlist",
         "pgclient",
@@ -26,6 +27,7 @@
         "psql",
         "sslmode",
         "Tablespace",
+        "taskfile",
         "taskfiles",
         "tsdb",
         "zstd"
