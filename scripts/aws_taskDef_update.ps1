@@ -6,7 +6,8 @@ $AWS_REGION = ""
 
 if ($region -eq $null -or $region -eq "") {
     $AWS_REGION = "eu-central-1"
-} else {
+}
+else {
     $AWS_REGION = $region
 }
 
@@ -16,14 +17,14 @@ Write-Output "AWS region: $AWS_REGION"
 
 # List all clusters
 $CLUSTERS = aws ecs list-clusters --region $AWS_REGION | ConvertFrom-Json | Select-Object -ExpandProperty clusterArns
-$CLUSTERS = $CLUSTERS | ForEach-Object { $_.Split('/')[1]  }
+$CLUSTERS = $CLUSTERS | ForEach-Object { $_.Split('/')[1] }
 
 Write-Output "Select a cluster:"
 $CLUSTER_NAME = menu @($CLUSTERS)
 
 # Get the list of services in the specified cluster
 $SERVICES = aws ecs list-services --cluster $CLUSTER_NAME --region $AWS_REGION | ConvertFrom-Json | Select-Object -ExpandProperty serviceArns
-$SERVICES = $SERVICES | ForEach-Object { $_.Split('/')[2]  }
+$SERVICES = $SERVICES | ForEach-Object { $_.Split('/')[2] }
 Write-Output "Select a service:"
 $SERVICE_NAME = menu @($SERVICES)
 
@@ -38,7 +39,7 @@ $TASK_DEFINITION_ARN = menu @($TASKDEFINITIONS)
 $TASK_DEFINITION_DETAILS = aws ecs describe-task-definition --task-definition $TASK_DEFINITION_ARN --region $AWS_REGION | ConvertFrom-Json
 
 
-$EXECUTION_ARN =  $TASK_DEFINITION_DETAILS.taskDefinition.executionRoleArn
+$EXECUTION_ARN = $TASK_DEFINITION_DETAILS.taskDefinition.executionRoleArn
 $TASK_ROLE_ARN = $TASK_DEFINITION_DETAILS.taskDefinition.taskRoleArn
 $TASK_FAMILY = $TASK_DEFINITION_DETAILS.taskDefinition.family
 $MEMORY = $TASK_DEFINITION_DETAILS.taskDefinition.memory
@@ -54,7 +55,7 @@ Write-Output "cpu: $CPU"
 Write-Output "architecture: $ARCHITECTURE"
 
 Write-Output "Container image: $($CONTAINER_DEFINITIONS[0].image) " # we can use this to replace the image if we want
-$CONTAINER_DEFINITIONS_JSON =  $CONTAINER_DEFINITIONS[0] | ConvertTo-Json -Depth 10
+$CONTAINER_DEFINITIONS_JSON = $CONTAINER_DEFINITIONS[0] | ConvertTo-Json -Depth 10
 
 Write-Output "Update the task (Y/N)"
 $CONFIRM = Read-Host
@@ -66,7 +67,7 @@ $NEW_TASK_INFO = aws ecs register-task-definition `
     --family $TASK_FAMILY `
     --container-definitions $CONTAINER_DEFINITIONS_JSON `
     --execution-role-arn $EXECUTION_ARN `
-    --task-role-arn $TASKROLE_ARN `
+    --task-role-arn $TASK_ROLE_ARN `
     --requires-compatibilities FARGATE `
     --network-mode awsvpc `
     --runtime-platform cpuArchitecture="$ARCHITECTURE" `
@@ -79,7 +80,7 @@ $NEW_REVISION = $NEW_TASK_INFO `
 | Select-Object -ExpandProperty revision
 
 aws ecs update-service `
-    --cluster $ECS_CLUSTER `
+    --cluster $CLUSTER_NAME `
     --service $SERVICE_NAME `
     --task-definition ${TASK_FAMILY}:${NEW_REVISION} | out-null
 

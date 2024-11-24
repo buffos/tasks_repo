@@ -52,12 +52,12 @@ $buildCommand = $buildCommand + " " + "`"${dockerfilePath}`"" # context path
 $buildCommand = $load ? $buildCommand + " --load" : $buildCommand
 
 # execute build command
-try {
-    Invoke-Expression $buildCommand
-} catch {
+Invoke-Expression $buildCommand
+if ($LASTEXITCODE -ne 0) {
     Write-Output "Build failed"
     exit 1
 }
+
 # if it was a success, increment the build number
 $config.$release.build = [int]$config.$release.build + 1
 $config | ConvertTo-Json -Depth 10 | Set-Content -Path $configFile
